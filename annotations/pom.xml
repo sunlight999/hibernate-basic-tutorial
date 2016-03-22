@@ -17,6 +17,7 @@
     </parent>
 
     <artifactId>hibernate-tutorial-annotations</artifactId>
+    <packaging>jar</packaging>
     <name>Hibernate Annotations Tutorial</name>
     <description>Hibernate tutorial illustrating the use of native APIs and annotations for mapping metadata</description>
 

@@ -17,6 +17,7 @@
     </parent>
 
     <artifactId>hibernate-tutorial-envers</artifactId>
+    <packaging>jar</packaging>
     <name>Hibernate Envers Tutorial</name>
     <description>Hibernate tutorial illustrating basic set up and use of Envers</description>
 

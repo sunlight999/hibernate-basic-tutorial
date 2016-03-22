@@ -28,6 +28,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -44,9 +45,14 @@ public class Event {
 
     private String title;
     
-   	@Temporal(TemporalType.TIMESTAMP)
+  	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "EVENT_DATE")
-    private Date date;
+   private Date date;
+  
+  
+   @ManyToOne
+    private Person     person;
+  
 
 	public Event() {
 		// this form used by Hibernate
@@ -58,6 +64,12 @@ public class Event {
 		this.date = date;
 	}
 
+  public Event(String title, Date date,Person person) {
+		// for application use, to create new events
+		this.title = title;
+		this.date = date;
+      this.person=person;
+	}
 
     public Long getId() {
 		return id;
@@ -81,5 +93,13 @@ public class Event {
 
     public void setTitle(String title) {
 		this.title = title;
+    }
+  
+  public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
     }
 }

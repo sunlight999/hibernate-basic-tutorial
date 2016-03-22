@@ -17,6 +17,7 @@
     </parent>
 
     <artifactId>hibernate-tutorial-hbm</artifactId>
+    <packaging>jar</packaging>
     <name>Hibernate hbm.xml Tutorial</name>
     <description>Hibernate tutorial illustrating the use of native APIs and hbm.xml for mapping metadata</description>
 
