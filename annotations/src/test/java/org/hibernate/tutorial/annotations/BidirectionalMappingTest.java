@@ -41,51 +41,49 @@ import junit.framework.TestCase;
  * @author Steve Ebersole
  */
 public class BidirectionalMappingTest extends TestCase {
-	private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-	@Override
-	protected void setUp() throws Exception {
-		// A SessionFactory is set up once for an application!
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
-		try {
-			sessionFactory = new MetadataSources( registry ).buildMetadata().buildSessionFactory();
-		}
-		catch (Exception e) {
-			// The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-			// so destroy it manually.
-			StandardServiceRegistryBuilder.destroy( registry );
-		}
-	}
+    @Override
+    protected void setUp() throws Exception {
+        // A SessionFactory is set up once for an application!
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure() // configures settings from hibernate.cfg.xml
+                                                                                     .build();
+        try {
+            sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+        } catch (Exception e) {
+            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
+            // so destroy it manually.
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
 
-	@Override
-	protected void tearDown() throws Exception {
-		if ( sessionFactory != null ) {
-			sessionFactory.close();
-		}
-	}
+    @Override
+    protected void tearDown() throws Exception {
+        if (sessionFactory != null) {
+            sessionFactory.close();
+        }
+    }
 
-	@SuppressWarnings({ "unchecked" })
-	public void testBasicUsage() {
-		// create a couple of events...
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-     Person person=new Person(30,"jean-michel","dupont");
-     person.getEvents().add(new Event( "Our very first event!", new Date(),person ) );
-     person.getEvents().add( new Event( "A follow up event", new Date(),person ) );
-    session.save(person);
-     session.getTransaction().commit();
-		session.close();
-
-		// now lets pull events from the database and list them
-		session = sessionFactory.openSession();
+    @SuppressWarnings({"unchecked"})
+    public void testBasicUsage() {
+        // create a couple of events...
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
-        List result = session.createQuery( "from Event" ).list();
-		for ( Event event : (List<Event>) result ) {
-			System.out.println( "Event (" + event.getDate() + ") : " + event.getTitle()+ ", person : "+event.getPerson().getLastname() );
-		}
+        Person person = new Person(30, "jean-michel", "dupont");
+        person.getEvents().add(new Event("Our very first event!", new Date(), person));
+        person.getEvents().add(new Event("A follow up event", new Date(), person));
+        session.save(person);
         session.getTransaction().commit();
         session.close();
-	}
+
+        // now lets pull events from the database and list them
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        List result = session.createQuery("from Event").list();
+        for (Event event : (List<Event>)result) {
+            System.out.println("Event (" + event.getDate() + ") : " + event.getTitle() + ", person : " + event.getPerson().getLastname());
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
 }

@@ -1,0 +1,1 @@
+{"mixinTypes":["contribution"],"builders":{"configs":{},"default":"maven"},"runners":{"configs":{},"default":"project:/ENV1-hibernate-basic-tutorial"},"type":"maven","attributes":{"languageVersion":["1.6"],"language":["java"]}}

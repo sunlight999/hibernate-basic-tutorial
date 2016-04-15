@@ -59,6 +59,7 @@
     </dependencies>
 
     <build>
+      
         <testResources>
             <testResource>
                 <filtering>false</filtering>
