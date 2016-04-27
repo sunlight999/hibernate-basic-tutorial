@@ -64,6 +64,29 @@ public class BidirectionalMappingTest extends TestCase {
         }
     }
 
+@SuppressWarnings({"unchecked"})
+    public void testSubclassBasicUsage() {
+        // create a couple of persons...
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        ActivPerson person = new ActivPerson(30, "jean-michel", "dupont");
+          session.save((Person)person);
+        session.getTransaction().commit();
+        session.close();
+
+        // now lets pull persons from the database and list them
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        List result = session.createQuery("from Person").list();
+        for (Person activPerson : (List<Person>)result) {
+            System.out.println("Person (" + activPerson.getId() + ") first name: " + activPerson.getFirstname() + ", age : " + activPerson.getAge());
+        }
+        
+        
+        session.getTransaction().commit();
+        session.close();
+    }
+
     @SuppressWarnings({"unchecked"})
     public void testBasicUsage() {
         // create a couple of events...
@@ -79,10 +102,12 @@ public class BidirectionalMappingTest extends TestCase {
         // now lets pull events from the database and list them
         session = sessionFactory.openSession();
         session.beginTransaction();
+        
         List result = session.createQuery("from Event").list();
         for (Event event : (List<Event>)result) {
             System.out.println("Event (" + event.getDate() + ") : " + event.getTitle() + ", person : " + event.getPerson().getLastname());
         }
+        
         session.getTransaction().commit();
         session.close();
     }

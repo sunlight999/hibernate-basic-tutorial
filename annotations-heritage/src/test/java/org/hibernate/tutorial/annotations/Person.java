@@ -26,6 +26,11 @@ package org.hibernate.tutorial.annotations;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -34,6 +39,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "PERSONS")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("P")
+@DiscriminatorColumn(name="P_TYPE", discriminatorType=DiscriminatorType.STRING)
 public class Person {
 
     @Id

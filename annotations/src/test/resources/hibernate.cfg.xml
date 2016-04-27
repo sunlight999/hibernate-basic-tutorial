@@ -35,8 +35,10 @@
         <property name="hbm2ddl.auto">create</property>
 
         <!-- Names the annotated entity class -->
-        <mapping class="org.hibernate.tutorial.annotations.Event"/>
-       <mapping class="org.hibernate.tutorial.annotations.Person"/>
+        <mapping class="org.hibernate.tutorial.annotations.step1.Event"/>
+        
+        <mapping class="org.hibernate.tutorial.annotations.step2.Event"/>
+        <mapping class="org.hibernate.tutorial.annotations.step2.Person"/>
 
     </session-factory>
 
