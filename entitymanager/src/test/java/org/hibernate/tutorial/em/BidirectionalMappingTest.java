@@ -26,11 +26,9 @@ package org.hibernate.tutorial.em;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import junit.framework.TestCase;
 
@@ -41,50 +39,54 @@ import junit.framework.TestCase;
  * @author Steve Ebersole
  */
 public class BidirectionalMappingTest extends TestCase {
-    private SessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
+
 
     @Override
     protected void setUp() throws Exception {
-        // A SessionFactory is set up once for an application!
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure() // configures settings from hibernate.cfg.xml
-                                                                                     .build();
-        try {
-            sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-        } catch (Exception e) {
-            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-            // so destroy it manually.
-            StandardServiceRegistryBuilder.destroy(registry);
-        }
+        // like discussed with regards to SessionFactory, an EntityManagerFactory is set up once for an application
+        // 		IMPORTANT: notice how the name here matches the name we gave the persistence-unit in persistence.xml!
+        entityManagerFactory = Persistence.createEntityManagerFactory("org.hibernate.tutorial.jpa");
     }
 
     @Override
     protected void tearDown() throws Exception {
-        if (sessionFactory != null) {
-            sessionFactory.close();
-        }
+        entityManagerFactory.close();
     }
 
-@SuppressWarnings({"unchecked"})
+    @SuppressWarnings({"unchecked"})
     public void testSubclassBasicUsage() {
         // create a couple of persons...
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.persist(new Event("Our very first event!", new Date()));
+        entityManager.persist(new Event("A follow up event", new Date()));
+
         ActivPerson person = new ActivPerson(30, "jean-michel", "dupont");
-          session.save((Person)person);
-        session.getTransaction().commit();
-        session.close();
+        entityManager.persist((Person)person);
+        entityManager.getTransaction().commit();
+        entityManager.close();
 
         // now lets pull persons from the database and list them
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        List result = session.createQuery("from Person").list();
-        for (Person activPerson : (List<Person>)result) {
-            System.out.println("Person (" + activPerson.getId() + ") first name: " + activPerson.getFirstname() + ", age : " + activPerson.getAge());
+        entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        List<Person> result = entityManager.createQuery("from Person", Person.class).getResultList();
+
+        for (Person activPerson : result) {
+            System.out.println("Person (" + activPerson.getId() + ") first name: " + activPerson.getFirstname() + ", age : "
+                               + activPerson.getAge());
         }
-        
-        
-        session.getTransaction().commit();
-        session.close();
+      
+       // now lets pull events from the database and list them
+        List<Event> resultEvent = entityManager.createQuery("from Event", Event.class).getResultList();
+        for (Event event : resultEvent) {
+            System.out.println("Event (" + event.getDate() + ") : " + event.getTitle());
+        }
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+
     }
 
 }
