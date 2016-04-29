@@ -23,83 +23,70 @@
  */
 package org.hibernate.tutorial.em;
 
-import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import org.hibernate.annotations.GenericGenerator;
 
+
 @Entity
-@Table( name = "EVENTS" )
-public class Event {
-	@Id
-	@GeneratedValue(generator="increment")
-	@GenericGenerator(name="increment", strategy = "increment")
-    private Long id;
+@Table(name = "PERSONS")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("P")
+@DiscriminatorColumn(name="P_TYPE", discriminatorType=DiscriminatorType.STRING)
+public class Person {
 
-    private String title;
-    
-  	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "EVENT_DATE")
-   private Date date;
-  
-  
-   @ManyToOne
-    private Person     person;
-  
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    @Column(name = "PERSON_ID")
+    protected Long       id;
 
-	public Event() {
-		// this form used by Hibernate
-	}
+    @Column(name = "age")
+    protected int        age;
 
-	public Event(String title, Date date) {
-		// for application use, to create new events
-		this.title = title;
-		this.date = date;
-	}
+    @Column(name = "first_name")
+    protected String     firstname;
 
-  public Event(String title, Date date,Person person) {
-		// for application use, to create new events
-		this.title = title;
-		this.date = date;
-      this.person=person;
-	}
+    @Column(name = "last_name")
+    protected String     lastname;
 
+    public Person() {
+    }
+
+    public Person(int age, String firstname, String lastname) {
+        this.age = age;
+        this.firstname = firstname;
+        this.lastname = lastname;
+    }
+
+    // Accessor methods for all properties, private setter for 'id'
     public Long getId() {
-		return id;
+        return id;
     }
 
     private void setId(Long id) {
-		this.id = id;
+        this.id = id;
     }
 
-    public Date getDate() {
-		return date;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setDate(Date date) {
-		this.date = date;
+    public String getLastname() {
+        return lastname;
     }
 
-    public String getTitle() {
-		return title;
+    public int getAge() {
+        return age;
     }
 
-    public void setTitle(String title) {
-		this.title = title;
-    }
-  
-  public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 }
